@@ -16,7 +16,7 @@ mod schema;
 mod insertables;
 
 use db_utils::{get_pool, AppState, DbActor};
-use services::{buscar_conductoras, crear_conductora};
+use services::{buscar_conductoras, crear_conductora, actualizar_conductora, eliminar_conductora};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -30,6 +30,8 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(AppState { db: db_addr.clone() }))
             .service(buscar_conductoras)
             .service(crear_conductora)
+            .service(actualizar_conductora)
+            .service(eliminar_conductora)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

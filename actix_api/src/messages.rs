@@ -15,3 +15,20 @@ pub struct CrearConductora {
     pub correo: String,
     pub area: String,
 }
+
+#[derive(Message)]
+#[rtype(result = "QueryResult<Conductora>")]
+pub struct ActualizarConductora {
+    pub id: i32,
+    pub nombre: String,
+    pub edad: i32,
+    pub telefono: String,
+    pub correo: String,
+    pub area: String,
+}
+
+#[derive(Message)]
+#[rtype(result = "QueryResult<Conductora>")]
+pub struct EliminarConductora {
+    pub id: i32,
+}
