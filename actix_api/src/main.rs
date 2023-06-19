@@ -1,4 +1,5 @@
 use actix::SyncArbiter;
+use actix_cors::Cors;
 use actix_web::{web::Data, App, HttpServer};
 use dotenv::dotenv;
 use diesel::{
@@ -26,14 +27,22 @@ async fn main() -> std::io::Result<()> {
     let db_addr = SyncArbiter::start(5, move || DbActor(pool.clone()));
     
     HttpServer::new(move || {
+
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header()
+            .max_age(3600);
+
         App::new()
             .app_data(Data::new(AppState { db: db_addr.clone() }))
+            .wrap(cors)
             .service(buscar_conductoras)
             .service(crear_conductora)
             .service(actualizar_conductora)
             .service(eliminar_conductora)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", 8081))?
     .run()
     .await
 }
