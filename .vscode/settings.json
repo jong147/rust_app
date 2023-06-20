@@ -1,0 +1,8 @@
+{
+    "rust-analyzer.linkedProjects": [
+        ".\\yew_ui\\Cargo.toml",
+        ".\\yew_ui\\Cargo.toml",
+        ".\\yew_ui\\Cargo.toml"
+    ],
+    "rust-analyzer.showUnlinkedFileNotification": false
+}
