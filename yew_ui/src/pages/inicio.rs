@@ -6,10 +6,13 @@ use yew_router::prelude::*;
 pub fn inicio() -> Html {
     html! {
       <>
-        <h1>{"Inicio"}</h1>
+        <h3>{"Inicio"}</h3>
         <div>
           <Link<MainRoute> to={MainRoute::Inicio}>{ "Inicio" }</Link<MainRoute>>
+          <br/>
           <Link<MainRoute> to={MainRoute::AgregarConductora}>{ "Agregar" }</Link<MainRoute>>
+          <br/>
+          <Link<MainRoute> to={MainRoute::ActualizarConductora}>{ "Actualizar" }</Link<MainRoute>>
         </div>
       </>
     }

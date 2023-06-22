@@ -2,14 +2,15 @@ use crate::router::MainRoute;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
+use gloo_net::http::Request;
 use std::ops::Deref;
-use wasm_bindgen::JsCast;
 use web_sys::HtmlInputElement;
+use wasm_bindgen::JsCast;
 
 #[derive(Default, Clone, PartialEq, Serialize, Deserialize)]
 struct Conductora {
+    id: i32,
     nombre: String,
     edad: i32,
     telefono: String,
@@ -17,8 +18,9 @@ struct Conductora {
     area: String,
 }
 
-#[function_component(AgregarConductora)]
-pub fn agregar_conductora() -> Html {
+#[function_component(ActualizarConductora)]
+pub fn actualizar_conductora() -> Html {
+    
     let conductora_state = use_state(|| Conductora::default());
 
     //función para obtener el nombre de la conductora
@@ -26,10 +28,10 @@ pub fn agregar_conductora() -> Html {
     let nombre_handler = Callback::from(move |event: InputEvent| {
         let mut data = conductora_clonada.deref().clone();
         data.nombre = event
-            .target()
-            .unwrap()
-            .unchecked_into::<HtmlInputElement>()
-            .value();
+        .target()
+        .unwrap()
+        .unchecked_into::<HtmlInputElement>()
+        .value();
         conductora_clonada.set(data);
     });
 
@@ -38,12 +40,12 @@ pub fn agregar_conductora() -> Html {
     let edad_handler = Callback::from(move |event: InputEvent| {
         let mut data = conductora_clonada.deref().clone();
         data.edad = event
-            .target()
-            .unwrap()
-            .unchecked_into::<HtmlInputElement>()
-            .value()
-            .parse::<i32>()
-            .unwrap();
+        .target()
+        .unwrap()
+        .unchecked_into::<HtmlInputElement>()
+        .value()
+        .parse::<i32>()
+        .unwrap();
         conductora_clonada.set(data);
     });
 
@@ -52,10 +54,10 @@ pub fn agregar_conductora() -> Html {
     let telefono_handler = Callback::from(move |event: InputEvent| {
         let mut data = conductora_clonada.deref().clone();
         data.telefono = event
-            .target()
-            .unwrap()
-            .unchecked_into::<HtmlInputElement>()
-            .value();
+        .target()
+        .unwrap()
+        .unchecked_into::<HtmlInputElement>()
+        .value();
         conductora_clonada.set(data);
     });
 
@@ -64,10 +66,10 @@ pub fn agregar_conductora() -> Html {
     let correo_handler = Callback::from(move |event: InputEvent| {
         let mut data = conductora_clonada.deref().clone();
         data.correo = event
-            .target()
-            .unwrap()
-            .unchecked_into::<HtmlInputElement>()
-            .value();
+        .target()
+        .unwrap()
+        .unchecked_into::<HtmlInputElement>()
+        .value();
         conductora_clonada.set(data);
     });
 
@@ -76,21 +78,32 @@ pub fn agregar_conductora() -> Html {
     let area_handler = Callback::from(move |event: InputEvent| {
         let mut data = conductora_clonada.deref().clone();
         data.area = event
-            .target()
-            .unwrap()
-            .unchecked_into::<HtmlInputElement>()
-            .value();
+        .target()
+        .unwrap()
+        .unchecked_into::<HtmlInputElement>()
+        .value();
         conductora_clonada.set(data);
     });
 
-    //función para agregar conductora
+    //función para actualizar conductora
     let on_submit = Callback::from(move |event: SubmitEvent| {
         event.prevent_default();
 
         let conductora_clonada = conductora_state.clone();
 
+        //test de actualizar
+
+        conductora_clonada.set(Conductora {
+            id: 6,
+            nombre: conductora_clonada.deref().nombre.clone(),
+            edad: conductora_clonada.deref().edad.clone(),
+            telefono: conductora_clonada.deref().telefono.clone(),
+            correo: conductora_clonada.deref().correo.clone(),
+            area: conductora_clonada.deref().area.clone(),
+        });
+
         wasm_bindgen_futures::spawn_local(async move {
-            Request::post("http://localhost:8081/crearconductora")
+            Request::put("http://localhost:8081/conductoras/6")
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&*conductora_clonada).unwrap())
                 .unwrap()
@@ -99,19 +112,20 @@ pub fn agregar_conductora() -> Html {
                 .unwrap();
         });
     });
-
+    
     html! {
       <>
-        <h3>{"Agregar Conductora"}</h3>
+        <h3>{"Actualizar Conductora"}</h3>
         <div>
-          <Link<MainRoute> to={MainRoute::Inicio}>{ "Inicio" }</Link<MainRoute>>
-          <br/>
-          <Link<MainRoute> to={MainRoute::AgregarConductora}>{ "Agregar" }</Link<MainRoute>>
-          <br/>
-          <Link<MainRoute> to={MainRoute::ActualizarConductora}>{ "Actualizar" }</Link<MainRoute>>
+            <Link<MainRoute> to={MainRoute::Inicio}>{ "Inicio" }</Link<MainRoute>>
+            <br/>
+            <Link<MainRoute> to={MainRoute::AgregarConductora}>{ "Agregar" }</Link<MainRoute>>
+            <br/>
+            <Link<MainRoute> to={MainRoute::ActualizarConductora}>{ "Actualizar" }</Link<MainRoute>>
         </div>
         <div>
             <br/>
+            //no esta funcionando actualmente, en modo de prueba
             <form onsubmit={on_submit}>
                 <label>{ "Nombre: " }</label>
                 <input id="nombre" name="nombre" type="text" oninput={nombre_handler} />
@@ -129,7 +143,7 @@ pub fn agregar_conductora() -> Html {
                 <input id="area" name="area" type="text" oninput={area_handler} />
                 <br/>
                 <br/>
-                <button type="submit">{ "Agregar" }</button>
+                <button type="submit">{ "Actualizar" }</button>
             </form>
         </div>
       </>
