@@ -19,6 +19,7 @@ struct Conductora {
 
 #[function_component(AgregarConductora)]
 pub fn agregar_conductora() -> Html {
+
     let conductora_state = use_state(|| Conductora::default());
 
     //función para obtener el nombre de la conductora
@@ -105,10 +106,8 @@ pub fn agregar_conductora() -> Html {
         <h3>{"Agregar Conductora"}</h3>
         <div>
           <Link<MainRoute> to={MainRoute::Inicio}>{ "Inicio" }</Link<MainRoute>>
-          <br/>
+          {"\u{2003}"}
           <Link<MainRoute> to={MainRoute::AgregarConductora}>{ "Agregar" }</Link<MainRoute>>
-          <br/>
-          <Link<MainRoute> to={MainRoute::ActualizarConductora}>{ "Actualizar" }</Link<MainRoute>>
         </div>
         <div>
             <br/>

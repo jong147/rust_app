@@ -1,11 +1,11 @@
 use crate::router::MainRoute;
 use yew::prelude::*;
-use yew_router::prelude::*;
+use yew_router::{prelude::*, history::{BrowserHistory, History}};
 
 use serde::{Deserialize, Serialize};
 use gloo_net::http::Request;
 use std::ops::Deref;
-use web_sys::HtmlInputElement;
+use web_sys::{HtmlInputElement};
 use wasm_bindgen::JsCast;
 
 #[derive(Default, Clone, PartialEq, Serialize, Deserialize)]
@@ -22,9 +22,14 @@ struct Conductora {
 pub fn actualizar_conductora() -> Html {
     
     let conductora_state = use_state(|| Conductora::default());
+    
+    let conductora_clonada = conductora_state.clone();
+
+    let history = BrowserHistory::new();
+    let history = history.location().clone();
+    let route_id: String = history.path().split("/").last().unwrap().to_string();
 
     //función para obtener el nombre de la conductora
-    let conductora_clonada = conductora_state.clone();
     let nombre_handler = Callback::from(move |event: InputEvent| {
         let mut data = conductora_clonada.deref().clone();
         data.nombre = event
@@ -90,11 +95,10 @@ pub fn actualizar_conductora() -> Html {
         event.prevent_default();
 
         let conductora_clonada = conductora_state.clone();
-
-        //test de actualizar
+        let conductora_id = route_id.clone();
 
         conductora_clonada.set(Conductora {
-            id: 6,
+            id: conductora_id.clone().parse::<i32>().unwrap(),
             nombre: conductora_clonada.deref().nombre.clone(),
             edad: conductora_clonada.deref().edad.clone(),
             telefono: conductora_clonada.deref().telefono.clone(),
@@ -103,7 +107,7 @@ pub fn actualizar_conductora() -> Html {
         });
 
         wasm_bindgen_futures::spawn_local(async move {
-            Request::put("http://localhost:8081/conductoras/6")
+            Request::put((format!("{}{}", "http://localhost:8081/conductoras/", conductora_id.clone())).as_str())
                 .header("Content-Type", "application/json")
                 .body(serde_json::to_string(&*conductora_clonada).unwrap())
                 .unwrap()
@@ -118,10 +122,8 @@ pub fn actualizar_conductora() -> Html {
         <h3>{"Actualizar Conductora"}</h3>
         <div>
             <Link<MainRoute> to={MainRoute::Inicio}>{ "Inicio" }</Link<MainRoute>>
-            <br/>
+            {"\u{2003}"}
             <Link<MainRoute> to={MainRoute::AgregarConductora}>{ "Agregar" }</Link<MainRoute>>
-            <br/>
-            <Link<MainRoute> to={MainRoute::ActualizarConductora}>{ "Actualizar" }</Link<MainRoute>>
         </div>
         <div>
             <br/>

@@ -3,10 +3,14 @@ mod pages;
 mod router;
 
 use crate::router::{switch_main, MainRoute};
+use crate::pages::eliminar_conductora;
 use gloo_net::http::Request;
 use serde::{Deserialize, Serialize};
 use yew::prelude::*;
-use yew_router::prelude::*;
+use yew_router::{prelude::*, BrowserRouter};
+
+// use log::info;
+// use wasm_bindgen::JsValue;
 
 #[derive(Clone, PartialEq, Serialize, Deserialize)]
 struct Conductora {
@@ -20,6 +24,7 @@ struct Conductora {
 
 #[function_component(App)]
 fn app() -> Html {
+
     //crear variable para alojar las conductoras de la base de datos
     let conductoras = use_state(|| vec![]);
 
@@ -44,7 +49,7 @@ fn app() -> Html {
         <>
         <center>
             <h1>{ "Línea Rosa" }</h1>
-        
+
         <div>
             <h2>{ "Conductoras" }</h2>
         </div>
@@ -52,27 +57,6 @@ fn app() -> Html {
         <BrowserRouter>
             <Switch<MainRoute> render={switch_main} />
         </BrowserRouter>
-
-        <div>
-            // <form onsubmit={form_submitted}>
-            //     // <label>{ "Nombre: " }</label>
-            //     // <TextInput name="nombre" handle_onchange={nombre_cambiado} />
-
-            //     // <label>{ "Edad: " }</label>
-            //     // <NumberInput name="edad" handle_onchange_number={edad_cambiada} />
-
-            //     // <label>{ "Teléfono: " }</label>
-            //     // <TextInput name="telefono" handle_onchange={telefono_cambiado} />
-
-            //     // <label>{ "Correo: " }</label>
-            //     // <TextInput name="correo" handle_onchange={correo_cambiado} />
-
-            //     // <label>{ "Área: " }</label>
-            //     // <TextInput name="area" handle_onchange={area_cambiada} />
-
-            //     <button type="submit" >{ "Agregar" }</button>
-            // </form>
-        </div>
 
         <div>
             <br/>
@@ -98,9 +82,11 @@ fn app() -> Html {
                             <td>{ &conductora.correo }</td>
                             <td>{ &conductora.area }</td>
                             <td>
-                                <button>{ "Actualizar" }</button>
-                                {"\u{00a0}"}
-                                <button>{ "Eliminar" }</button>
+                                <BrowserRouter>
+                                    <button><Link<MainRoute> to={MainRoute::ActualizarConductora{id:conductora.id.to_string()}}>{ "Actualizar" }</Link<MainRoute>></button>
+                                    {"\u{00a0}"}
+                                    <button onclick={eliminar_conductora::eliminar_fn(conductora.id)} >{ "Eliminar" }</button>
+                                </BrowserRouter>
                             </td>
                         </tr>
                     }) }
@@ -114,5 +100,11 @@ fn app() -> Html {
 }
 
 fn main() {
+
+    // Debugging con la consola del navegador
+    // wasm_logger::init(wasm_logger::Config::default());
+    // let object = JsValue::from("");
+    // info!("Console: {}", object.as_string().unwrap());
+
     yew::Renderer::<App>::new().render();
 }

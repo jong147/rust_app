@@ -10,19 +10,20 @@ pub enum MainRoute {
     Inicio,
     #[at("/crear_conductora")]
     AgregarConductora,
-    // #[at("/actualizar_conductora/:id")]
-    #[at("/actualizar_conductora")]
-    ActualizarConductora,
+    #[at("/actualizar_conductora/:id")]
+    ActualizarConductora { id : String },
     #[not_found]
     #[at("/404")]
     NotFound,
 }
 
 pub fn switch_main(route: MainRoute) -> Html {
+
     match route {
         MainRoute::Inicio => html! {< Inicio />},
         MainRoute::AgregarConductora => html! {< AgregarConductora />},
-        MainRoute::ActualizarConductora => html! {< ActualizarConductora />},
+        MainRoute::ActualizarConductora { id } => html! {< ActualizarConductora />},
         MainRoute::NotFound => html! {<h1>{"404"}</h1>},
     }
+
 }

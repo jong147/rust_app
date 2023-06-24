@@ -9,10 +9,8 @@ pub fn inicio() -> Html {
         <h3>{"Inicio"}</h3>
         <div>
           <Link<MainRoute> to={MainRoute::Inicio}>{ "Inicio" }</Link<MainRoute>>
-          <br/>
+          {"\u{2003}"}
           <Link<MainRoute> to={MainRoute::AgregarConductora}>{ "Agregar" }</Link<MainRoute>>
-          <br/>
-          <Link<MainRoute> to={MainRoute::ActualizarConductora}>{ "Actualizar" }</Link<MainRoute>>
         </div>
       </>
     }
